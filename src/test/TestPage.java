@@ -1,11 +1,13 @@
 package test;
 
-import core.ScaleComponent;
-import core.ScalePage;
+import core.readycomponents.ScaleButton;
+import core.components.ScalePage;
 import core.ScaleUIApplication;
+import core.readycomponents.ScaleLabel;
+import core.readycomponents.ScaleTxtArea;
 import core.utilities.Dim;
-import core.utilities.ScaleGraphic;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class TestPage extends ScalePage {
@@ -16,18 +18,23 @@ public class TestPage extends ScalePage {
 
         TestButton button = new TestButton(new Dim(10, 10, 30, 10), "Test Button");
 
-        ScaleComponent rect = new ScaleComponent(new Dim(40, 40, 30, 10)) {
-            @Override
-            public void draw(ScaleGraphic g) {
-                g.drawRoundRect(dim, 10, Color.white);
+        ScaleButton btn = new ScaleButton(new Dim(10, 30, 30, 10), "Scale Button", Color.blue, Color.white);
+        btn.setAction(() -> {
+            btn.setBackground(Color.red);
+            btn.setTextColor(Color.white);
+        });
 
-            }
-        };
+        ScaleLabel label = new ScaleLabel(new Dim(10, 50, 30, 10), "Scale Label");
 
+        ScaleTxtArea txtArea = new ScaleTxtArea(new Dim(10, 70, 30, 20), Color.green, Color.white);
+
+        createKey("test",
+                () -> JOptionPane.showMessageDialog(null, "Key pressed! " + txtArea.getText()),
+                "CTRL", "T");
+
+        addScale(txtArea);
         addScale(button);
-        addScale(rect);
+        addScale(btn);
+        addScale(label);
     }
-
-    @Override
-    public void draw(ScaleGraphic g) {}
 }

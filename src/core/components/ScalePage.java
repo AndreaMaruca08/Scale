@@ -1,5 +1,6 @@
-package core;
+package core.components;
 
+import core.ScaleUIApplication;
 import core.utilities.*;
 
 import javax.swing.*;
@@ -7,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +72,9 @@ public abstract class ScalePage extends JPanel implements Drawable {
     public void update(Dim d){
         repaint(d.toRectangle(this));
     }
+
+    @Override
+    public void draw(ScaleGraphic g) {}
 
     @Override
     public void paintComponent(Graphics g) {

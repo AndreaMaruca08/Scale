@@ -1,6 +1,6 @@
 package test;
 
-import core.ScalePressableComponent;
+import core.components.ScalePressableComponent;
 import core.utilities.Dim;
 import core.utilities.ScaleGraphic;
 

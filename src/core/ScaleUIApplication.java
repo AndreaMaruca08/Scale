@@ -1,5 +1,6 @@
 package core;
 
+import core.components.ScalePage;
 import core.utilities.PageManager;
 
 import javax.swing.*;
@@ -36,7 +37,7 @@ public final class ScaleUIApplication extends JFrame {
      * @param pagina The {@link ScalePage} instance to be added.
      */
     public void addPage(ScalePage pagina){
-        pageManager.addPagina(pagina.name, pagina);
+        pageManager.addPagina(pagina.getName(), pagina);
     }
 
     public void changePage(String pageName){

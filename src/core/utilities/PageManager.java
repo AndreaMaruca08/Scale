@@ -1,6 +1,6 @@
 package core.utilities;
 
-import core.ScalePage;
+import core.components.ScalePage;
 
 import javax.swing.*;
 import java.awt.*;

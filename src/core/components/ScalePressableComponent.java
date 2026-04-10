@@ -1,4 +1,4 @@
-package core;
+package core.components;
 
 import core.utilities.Dim;
 
@@ -10,7 +10,7 @@ import java.awt.*;
  * @since 1.0
  * @author Andrea Maruca
  */
-public abstract class ScalePressableComponent extends ScaleComponent implements Pressable{
+public abstract class ScalePressableComponent extends ScaleComponent implements Pressable {
     public ScalePressableComponent(Dim dim) {
         super(dim);
     }

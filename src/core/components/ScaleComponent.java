@@ -1,10 +1,6 @@
-package core;
+package core.components;
 
 import core.utilities.Dim;
-import core.utilities.ScaleGraphic;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <h1>ScaleComponent</h1><br>
@@ -15,7 +11,7 @@ import java.util.List;
  * @since 1.0
  */
 
-public abstract class ScaleComponent implements Drawable{
+public abstract class ScaleComponent implements Drawable {
     protected Dim dim;
 
     public ScaleComponent(Dim dim) {

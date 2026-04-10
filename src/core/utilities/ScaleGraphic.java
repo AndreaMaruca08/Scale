@@ -1,6 +1,6 @@
 package core.utilities;
 
-import core.ScaleComponent;
+import core.components.ScaleComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +54,7 @@ public record ScaleGraphic(
      * @param text           text to draw
      * @param labelDimension position and dimension of the text
      */
-    public void drawWrapText(String text, Dim labelDimension) {
+    public void drawWrapText(Dim labelDimension, String text) {
         Graphics2D g = g2();
         int x = getX(labelDimension.x() + 2);
         int y = getY(labelDimension.y() + 2);
@@ -98,7 +98,7 @@ public record ScaleGraphic(
 
     public void drawWrapTextWithColor(String text, Dim labelDimension, Color color) {
         g2().setColor(color);
-        drawWrapText(text, labelDimension);
+        drawWrapText(labelDimension, text);
     }
 
 
