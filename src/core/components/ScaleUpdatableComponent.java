@@ -13,6 +13,10 @@ public abstract class ScaleUpdatableComponent extends ScaleComponent implements 
         super(dim);
         this.page = page;
     }
+    public ScaleUpdatableComponent(Dim dim, ScalePage page, String name) {
+        super(dim, name);
+        this.page = page;
+    }
     @Override
     public void update() {
         page.update(dim);

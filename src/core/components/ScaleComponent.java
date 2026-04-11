@@ -13,9 +13,23 @@ import core.utilities.Dim;
 
 public abstract class ScaleComponent implements Drawable {
     protected Dim dim;
+    protected String name;
 
     public ScaleComponent(Dim dim) {
         this.dim = dim;
+        this.name = "not named";
+    }
+    public ScaleComponent(Dim dim, String name) {
+        this(dim);
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Dim getDim() {

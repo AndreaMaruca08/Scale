@@ -19,14 +19,14 @@ import java.util.List;
 public abstract class ScalePage extends JPanel implements Drawable {
     protected final ScaleUIApplication app;
     protected List<ScaleComponent> children;
-    protected String name;
+    protected String pageName;
     protected boolean clicked;
     protected double xClicked = -1;
     protected double yClicked = -1;
 
     protected ScalePage(ScaleUIApplication app, String name) {
         this.app = app;
-        this.name = name;
+        this.pageName = name;
         children = new ArrayList<>(5);
 
         setLayout(null);
@@ -43,6 +43,10 @@ public abstract class ScalePage extends JPanel implements Drawable {
     }
     protected ScalePage() {
         this(null, "Not specified");
+    }
+
+    public String getPageName(){
+        return pageName;
     }
 
     protected void createKey(String action, Runnable runnable, String... key){
@@ -83,7 +87,11 @@ public abstract class ScalePage extends JPanel implements Drawable {
         draw(ge);
         clicked = false;
 
+        if(ScaleUIApplication.DEBUG)
+            ScaleLogger.log("DRAW CYCLE STARTED FOR " + pageName + "\n", this);
+
         for(ScaleComponent child : children){
+            debug(child);
             child.draw(ge);
         }
     }
@@ -93,11 +101,20 @@ public abstract class ScalePage extends JPanel implements Drawable {
             if(component instanceof ScalePressableComponent pressable){
                 if(pressable.checkPress(xClicked, yClicked, this)){
                     pressable.press();
-                    updateNow(pressable.getDim());
+                    update(pressable.getDim());
+                    if(ScaleUIApplication.DEBUG)
+                        ScaleLogger.log("Pressed: " + pressable.name, this);
                     break;
                 }
             }
         }
+    }
+
+    private void debug(ScaleComponent component){
+        if(!ScaleUIApplication.DEBUG)
+            return;
+
+        ScaleLogger.log("Drawn: " + component.name + " at " + component.getDim(), this);
     }
 
 }

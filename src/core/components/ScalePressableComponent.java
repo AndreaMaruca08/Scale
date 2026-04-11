@@ -14,6 +14,9 @@ public abstract class ScalePressableComponent extends ScaleComponent implements 
     public ScalePressableComponent(Dim dim) {
         super(dim);
     }
+    public ScalePressableComponent(Dim dim, String name) {
+        super(dim, name);
+    }
 
     @Override
     public boolean checkPress(double x, double y, Component parent){

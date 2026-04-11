@@ -26,6 +26,14 @@ public class ScaleTxtArea extends ScaleComponent {
         textArea.setForeground(textColor);
     }
 
+    public JTextArea getTextArea() {
+        return textArea;
+    }
+
+    public void setFont(Font font){
+        textArea.setFont(font);
+    }
+
     public ScaleTxtArea(Dim dim) {
         this(dim, Color.white, Color.black);
     }

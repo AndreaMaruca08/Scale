@@ -18,6 +18,8 @@ public final class ScaleUIApplication extends JFrame {
     public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private PageManager pageManager;
 
+    public static boolean DEBUG = false;
+
     public ScaleUIApplication(String title, Dimension dimension) {
         super(title);
         this.pageManager = new PageManager();
@@ -28,8 +30,27 @@ public final class ScaleUIApplication extends JFrame {
         setContentPane(pageManager.container);
         setVisible(true);
     }
+
     public ScaleUIApplication(String title) {
         this(title, screenSize);
+    }
+
+    public ScaleUIApplication(String title, Dimension dimension, boolean debug) {
+        this(title, dimension);
+        DEBUG = debug;
+    }
+
+    public ScaleUIApplication(String title, boolean debug) {
+        this(title, screenSize);
+        DEBUG = debug;
+    }
+
+    public void startDebug(){
+        DEBUG = true;
+    }
+
+    public void stopDebug(){
+        DEBUG = false;
     }
 
     /**

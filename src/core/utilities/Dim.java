@@ -66,5 +66,13 @@ public record Dim(
                 width - x*2, height - y*2
         );
     }
-
+    @Override
+    public String toString() {
+        return "Dim{" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
+    }
 }

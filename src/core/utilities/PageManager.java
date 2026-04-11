@@ -15,7 +15,6 @@ import java.util.Arrays;
 public class PageManager extends CardLayout {
     public JPanel container;
 
-
     public PageManager() {
         super();
         container = new JPanel(this);

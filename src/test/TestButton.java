@@ -15,7 +15,7 @@ public class TestButton extends ScalePressableComponent {
     private boolean pressed = false;
 
     public TestButton(Dim dim, String text) {
-        super(dim);
+        super(dim, text);
         this.text = text;
         backgroundColor = Color.white;
         textColor = Color.black;
