@@ -1,5 +1,6 @@
 package test;
 
+import core.readycomponents.CoolBorder;
 import core.readycomponents.ScaleButton;
 import core.components.ScalePage;
 import core.ScaleUIApplication;
@@ -14,7 +15,7 @@ public class TestPage extends ScalePage {
 
     public TestPage(ScaleUIApplication app) {
         super(app, "TestPage");
-        setBackground(Color.black);
+        setBackground(Color.white);
 
         TestButton button = new TestButton(new Dim(10, 10, 30, 10), "Test Button");
 
@@ -28,10 +29,15 @@ public class TestPage extends ScalePage {
 
         ScaleTxtArea txtArea = new ScaleTxtArea(new Dim(10, 70, 30, 20), Color.green, Color.white);
 
+        CoolBorder border = new CoolBorder(label.getDim(), Color.darkGray, 2);
+
         createKey("test",
                 () -> JOptionPane.showMessageDialog(null, "Key pressed! " + txtArea.getText()),
                 "CTRL", "T");
 
+
+
+        addScale(border);
         addScale(txtArea);
         addScale(button);
         addScale(btn);

@@ -44,10 +44,10 @@ public class ScaleTxtArea extends ScaleComponent {
 
     @Override
     public void draw(ScaleGraphic g) {
-        textArea.setBounds(dim.toRectangleSmaller(g.component()));
-        var compo = g.component().getComponents();
+        textArea.setBounds(dim.toRectangleSmaller(g.page()));
+        var compo = g.page().getComponents();
         if (!Arrays.asList(compo).contains(textArea)) {
-            g.component().add(textArea);
+            g.page().add(textArea);
         }
     }
 }

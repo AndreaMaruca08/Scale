@@ -1,8 +1,8 @@
 package core.utilities;
 
 import core.components.ScaleComponent;
+import core.components.ScalePage;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -13,7 +13,7 @@ import java.awt.*;
  * @since 1.0
  */
 public record ScaleGraphic(
-        JPanel component,
+        ScalePage page,
         Graphics2D g2
 ) {
     public void draw(ScaleComponent component) {
@@ -34,8 +34,8 @@ public record ScaleGraphic(
      *
      * @param thickness new thickness
      */
-    public void changeDrawWidth(int thickness) {
-        g2().setStroke(new BasicStroke(thickness));
+    public void changeDrawWidth(double thickness) {
+        g2().setStroke(new BasicStroke(getX(thickness)));
     }
 
     /**
@@ -192,7 +192,7 @@ public record ScaleGraphic(
      * @param arc   rectangle curvature
      * @param color border color
      */
-    public void drawRoundRectBorder(Dim dim, int arc, Color color) {
+    public void drawRoundRectBorder(Dim dim, double arc, Color color) {
         g2().setColor(color);
         roundRect(dim, arc, false);
     }
@@ -204,15 +204,15 @@ public record ScaleGraphic(
      * @param arc  rectangle curvature
      * @param fill if true fills the rectangle, otherwise draws only the border
      */
-    private void roundRect(Dim dim, int arc, boolean fill) {
+    private void roundRect(Dim dim, double arc, boolean fill) {
         int x = getX(dim.x());
         int y = getY(dim.y());
         int w = getX(dim.width());
         int h = getY(dim.height());
         if (fill)
-            g2().fillRoundRect(x, y, w, h, arc, arc);
+            g2().fillRoundRect(x, y, w, h, getX(arc), getY(arc));
         else
-            g2().drawRoundRect(x, y, w, h, arc, arc);
+            g2().drawRoundRect(x, y, w, h, getX(arc), getY(arc));
     }
 
     /**
@@ -291,7 +291,7 @@ public record ScaleGraphic(
     }
 
     public int getX(double x) {
-        return (int) (component.getWidth() * (x / 100f));
+        return (int) (page.getWidth() * (x / 100f));
     }
 
     public static int getX(double x, Component component) {
@@ -299,7 +299,7 @@ public record ScaleGraphic(
     }
 
     public int getY(double y) {
-        return (int) (component.getHeight() * (y / 100f));
+        return (int) (page.getHeight() * (y / 100f));
     }
 
     public static int getY(double y, Component component) {
