@@ -96,6 +96,83 @@ public record ScaleGraphic(
         }
     }
 
+    /**
+     * Draws the text at the specified position (starting from top-left)<br>
+     *
+     * @param dim   position and dimension of where to draw the text
+     * @param text  text to draw
+     * @param color text color
+     *
+     * @since 1.2
+     * @author Andrea Maruca
+     */
+    public void drawTextLeft(Dim dim, String text, Color color) {
+        Color oldColor = g2().getColor();
+        g2().setColor(color);
+
+        FontMetrics fm = g2().getFontMetrics();
+        int ascent = fm.getAscent();
+
+        int x = getX(dim.x() + 1);
+        int y = getY(dim.y()) + ascent + 1;
+
+        g2().drawString(text, x, y);
+        g2().setColor(oldColor);
+    }
+
+    /**
+     * Draws the text passed at the position passed and automatically wraps (starting from top-left)<br>
+     * (More expensive than {@link #drawTextLeft(Dim, String, Color)})
+     *
+     * @param labelDimension position and dimension of the text
+     * @param text           text to draw
+     *
+     * @since 1.2
+     * @author Andrea Maruca
+     */
+    public void drawWrapTextLeft(Dim labelDimension, String text) {
+        Graphics2D g = g2();
+        int x = getX(labelDimension.x() + 1);
+        int y = getY(labelDimension.y() + 1);
+        int width = getX(labelDimension.width() - 2);
+
+        FontMetrics fm = g.getFontMetrics();
+        int lineHeight = fm.getHeight();
+        int ascent = fm.getAscent();
+
+        int currentY = y + ascent;
+        StringBuilder line = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+
+            if (ch == '\n') {
+                g.drawString(line.toString(), x, currentY);
+                line.setLength(0);
+                currentY += lineHeight;
+                continue;
+            }
+
+            line.append(ch);
+
+            if (fm.stringWidth(line.toString()) > width) {
+                line.deleteCharAt(line.length() - 1);
+                g.drawString(line.toString(), x, currentY);
+                currentY += lineHeight;
+
+                line.setLength(0);
+
+                if (ch != ' ') {
+                    line.append(ch);
+                }
+            }
+        }
+
+        if (!line.isEmpty()) {
+            g.drawString(line.toString(), x, currentY);
+        }
+    }
+
     public void drawWrapTextWithColor(String text, Dim labelDimension, Color color) {
         g2().setColor(color);
         drawWrapText(labelDimension, text);
