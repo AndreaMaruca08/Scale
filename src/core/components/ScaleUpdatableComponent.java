@@ -17,6 +17,9 @@ public abstract class ScaleUpdatableComponent extends ScaleComponent implements 
         super(dim, name);
         this.page = page;
     }
+    public void updateAll() {
+        page.repaint();
+    }
     @Override
     public void update() {
         page.update(dim);
