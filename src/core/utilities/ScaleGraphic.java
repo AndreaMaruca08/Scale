@@ -3,7 +3,11 @@ package core.utilities;
 import core.components.ScaleComponent;
 import core.components.ScalePage;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <h1>The graphic context</h1>
@@ -16,6 +20,31 @@ public record ScaleGraphic(
         ScalePage page,
         Graphics2D g2
 ) {
+    private static final Map<String, Image> cachedImages = new HashMap<>();
+
+    public void drawImage(Dim dim, String percorso) {
+        Image image = cachedImages.computeIfAbsent(percorso, this::loadImage);
+
+        int x = getX(dim.x());
+        int y = getY(dim.y());
+        int w = getX(dim.width());
+        int h = getY(dim.height());
+
+        g2().drawImage(image, x, y, w, h, null);
+    }
+
+    private Image loadImage(String percorso) {
+        try {
+            return ImageIO.read(Objects.requireNonNull(
+                    ScaleGraphic.class.getResource("/" + percorso),
+                    "Resource notFound " + percorso
+            ));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public void draw(ScaleComponent component) {
         component.draw(this);
     }
