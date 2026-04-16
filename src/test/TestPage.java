@@ -36,7 +36,6 @@ public class TestPage extends ScalePage {
                 "CTRL", "T");
 
 
-
         addScale(border);
         addScale(txtArea);
         addScale(button);

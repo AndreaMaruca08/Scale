@@ -66,7 +66,7 @@ public class ScaleButton extends ScalePressableComponent {
     @Override
     public void draw(ScaleGraphic g) {
         if(rounded){
-            g.drawRoundRect(dim, 10, bg);
+            g.drawRoundRect(dim, 3, bg);
         }else
             g.drawRect(dim, bg);
         g.drawText(dim, text, txt);

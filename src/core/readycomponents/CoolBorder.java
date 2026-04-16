@@ -6,6 +6,12 @@ import core.utilities.ScaleGraphic;
 
 import java.awt.*;
 
+/**
+ * <h1>CoolBorder</h1>
+ * <p>
+ * A custom border component that draws a rounded rectangle with a shadow effect.
+ * </p>
+ */
 public class CoolBorder extends ScaleComponent {
     private Color color;
     private Color shadowColor;
