@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * <h1>Abstract class for a page</h1>
+ * <p>Abstract class for a page, provides basic functionalities for a page such as managing children components and handling user input.
+ * <br>Can also function as a game manager with a scrolling function of the screen </p>
  * @since 1.0
  * @author Andrea Maruca
  */
@@ -24,10 +26,15 @@ public abstract class ScalePage extends JPanel implements Drawable {
     protected double xClicked = -1;
     protected double yClicked = -1;
 
+    protected BackgroundController bgController;
+    protected Cycle gameCycle;
+    protected float lastDeltaTime = 0f;
+
     protected ScalePage(ScaleUIApplication app, String name) {
         this.app = app;
         this.pageName = name;
         children = new ArrayList<>(5);
+        bgController = null;
 
         setLayout(null);
 
@@ -83,19 +90,34 @@ public abstract class ScalePage extends JPanel implements Drawable {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ScaleGraphic ge = new ScaleGraphic(this, (Graphics2D) g);
+        Graphics2D g2 = (Graphics2D) g;
+        ScaleGraphic ge = new ScaleGraphic(this, g2);
+
         draw(ge);
         clicked = false;
 
         if(ScaleUIApplication.DEBUG)
             ScaleLogger.log("DRAW CYCLE STARTED FOR " + pageName + "\n", this);
 
+        if (bgController == null) {
+            for(ScaleComponent child : children){
+                debug(child);
+                child.draw(ge);
+            }
+            return;
+        }
+
+        bgController.update(lastDeltaTime, ge);
+        int offsetPx = (int) bgController.getOffsetX();
+        g2.translate(offsetPx, 0);
+
         for(ScaleComponent child : children){
             debug(child);
             child.draw(ge);
         }
-    }
 
+        g2.translate(-offsetPx, 0);
+    }
     private void pressComponents(List<ScaleComponent> components){
         for(ScaleComponent component : components){
             if(component instanceof ScalePressableComponent pressable){
@@ -117,4 +139,36 @@ public abstract class ScalePage extends JPanel implements Drawable {
         ScaleLogger.log("Drawn: " + component.name + " at " + component.getDim(), this);
     }
 
+    public float getBackgroundOffsetX() {
+        return bgController != null ? bgController.getOffsetX() : 0;
+    }
+
+    protected void setBackgroundController(BackgroundController controller) {
+        this.bgController = controller;
+    }
+
+    protected void startGameCycle(int msPerFrame) {
+        if (gameCycle != null) gameCycle.stopCycle();
+
+        gameCycle = new Cycle(msPerFrame);
+        gameCycle.setAction(() -> {
+            lastDeltaTime = gameCycle.getDeltaTime();
+            repaint();
+        });
+        gameCycle.startCycle();
+    }
+
+    protected void clickListener(Runnable runnable) {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                runnable.run();
+                paintImmediately(getBounds());
+            }
+        });
+    }
+
+    protected void stopGameCycle() {
+        if (gameCycle != null) gameCycle.stopCycle();
+    }
 }
