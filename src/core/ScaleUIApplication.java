@@ -58,18 +58,18 @@ public final class ScaleUIApplication extends JFrame {
      * @param pagina The {@link ScalePage} instance to be added.
      */
     public void addPage(ScalePage pagina){
-        pageManager.addPagina(pagina.getPageName(), pagina);
+        pageManager.addPage(pagina.getPageName(), pagina);
     }
 
     public void changePage(String pageName){
-        pageManager.cambiaPagina(pageName);
+        pageManager.changePage(pageName);
     }
 
     public PageManager getPageManager() {
         return pageManager;
     }
 
-    public void resetPagine(){
+    public void resetPages(){
         pageManager = new PageManager();
         setContentPane(pageManager.container);
     }

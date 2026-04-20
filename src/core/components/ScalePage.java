@@ -173,6 +173,14 @@ public class ScalePage extends JPanel implements Drawable {
         gameCycle.startCycle();
     }
 
+    protected void changePage(String pageName){
+        app.getPageManager().changePage(pageName);
+    }
+    protected void addAndChange(ScalePage page){
+        app.addPage(page);
+        app.changePage(page.getPageName());
+    }
+
     protected void stopGameCycle() {
         if (gameCycle != null) gameCycle.stopCycle();
     }

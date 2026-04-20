@@ -24,7 +24,7 @@ public class PageManager extends CardLayout {
      * Cambia la pagina attiva
      * @param nomePagina nome della pagina
      */
-    public void cambiaPagina(String nomePagina) {
+    public void changePage(String nomePagina) {
         show(container, nomePagina);
     }
 
@@ -33,7 +33,7 @@ public class PageManager extends CardLayout {
      * @param nomePagina nome della pagina
      * @param pagina pagina da aggiungere
      */
-    public void addPagina(String nomePagina, ScalePage pagina) {
+    public void addPage(String nomePagina, ScalePage pagina) {
         if(Arrays.stream(container.getComponents()).toList().contains(pagina))
             return;
         container.add(pagina, nomePagina);

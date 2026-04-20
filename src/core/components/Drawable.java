@@ -7,6 +7,7 @@ import core.utilities.ScaleGraphic;
  * @author Andrea Maruca
  * @since 1.0
  */
+@FunctionalInterface
 public interface Drawable {
     void draw(ScaleGraphic g);
 }
