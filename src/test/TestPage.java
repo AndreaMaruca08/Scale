@@ -6,8 +6,6 @@ import core.readycomponents.ScaleButton;
 import core.components.ScalePage;
 import core.ScaleUIApplication;
 import core.readycomponents.ScaleLabel;
-import core.utilities.BackgroundController;
-import core.utilities.Cycle;
 import core.utilities.Dim;
 
 import javax.swing.*;
@@ -19,7 +17,6 @@ public class TestPage extends ScalePage {
         super(app, "TestPage");
         setBackground(Color.white);
 
-        setBackgroundController(new BackgroundController(-10));
 
         TestButton button = new TestButton(new Dim(10, 10, 30, 10), "Test Button");
 
@@ -27,10 +24,6 @@ public class TestPage extends ScalePage {
         btn.setAction(() -> {
             btn.setBackground(Color.red);
             btn.setTextColor(Color.white);
-        });
-
-        clickListener(() -> {
-            System.out.println("Clicked");
         });
 
         ScaleLabel label = new ScaleLabel(new Dim(10, 50, 30, 10), "Scale Label");
@@ -41,6 +34,11 @@ public class TestPage extends ScalePage {
         addScale(btn);
         addScale(label);
 
-        startGameCycle(Cycle.FPS_120);
+        setupGameCycle(this::actio);
+        startGameCycle();
+
+    }
+    public void actio(){
+        repaint();
     }
 }

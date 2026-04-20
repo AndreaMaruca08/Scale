@@ -99,6 +99,6 @@ public class Cycle extends Timer {
                 .getDefaultScreenDevice();
         int refreshRate = gd.getDisplayMode().getRefreshRate();
 
-        return refreshRate == -1 ? FPS_60 : 1000 / refreshRate;
+        return refreshRate == -1 ? FPS_60 : 1000 / (refreshRate+5);
     }
 }

@@ -1,6 +1,6 @@
 package core.utilities;
 
-import core.components.ScaleComponent;
+import core.components.Drawable;
 import core.components.ScalePage;
 
 import javax.imageio.ImageIO;
@@ -45,7 +45,7 @@ public record ScaleGraphic(
         }
     }
 
-    public void draw(ScaleComponent component) {
+    public void draw(Drawable component) {
         component.draw(this);
     }
 

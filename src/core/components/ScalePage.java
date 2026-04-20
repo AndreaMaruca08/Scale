@@ -12,19 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <h1>Abstract class for a page</h1>
- * <p>Abstract class for a page, provides basic functionalities for a page such as managing children components and handling user input.
+ * <h1>Page</h1>
+ * <p>Class for a page, provides basic functionalities for a page such as managing children components and handling user input.
  * <br>Can also function as a game manager with a scrolling function of the screen </p>
  * @since 1.0
  * @author Andrea Maruca
  */
-public abstract class ScalePage extends JPanel implements Drawable {
+public class ScalePage extends JPanel implements Drawable {
     protected final ScaleUIApplication app;
-    protected List<ScaleComponent> children;
+    private final List<ScaleComponent> children;
     protected String pageName;
-    protected boolean clicked;
-    protected double xClicked = -1;
-    protected double yClicked = -1;
+    private double xClicked = -1;
+    private double yClicked = -1;
 
     protected BackgroundController bgController;
     protected Cycle gameCycle;
@@ -41,19 +40,23 @@ public abstract class ScalePage extends JPanel implements Drawable {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                clicked = true;
                 xClicked = e.getX();
                 yClicked = e.getY();
                 pressComponents(children);
             }
         });
     }
+
     protected ScalePage() {
         this(null, "Not specified");
     }
 
     public String getPageName(){
         return pageName;
+    }
+
+    public List<ScaleComponent> getChildren() {
+        return children;
     }
 
     protected void createKey(String action, Runnable runnable, String... key){
@@ -67,14 +70,15 @@ public abstract class ScalePage extends JPanel implements Drawable {
                 paintImmediately(getBounds());
             }
         });
-
     }
 
     public void addScale(ScaleComponent component){
         children.add(component);
     }
 
-    public void remove(ScaleComponent component){children.remove(component);}
+    public void remove(ScaleComponent component){
+        children.remove(component);
+    }
 
     public void updateNow(Dim d){
         paintImmediately(d.toRectangle(this));
@@ -94,16 +98,12 @@ public abstract class ScalePage extends JPanel implements Drawable {
         ScaleGraphic ge = new ScaleGraphic(this, g2);
 
         draw(ge);
-        clicked = false;
 
         if(ScaleUIApplication.DEBUG)
             ScaleLogger.log("DRAW CYCLE STARTED FOR " + pageName + "\n", this);
 
         if (bgController == null) {
-            for(ScaleComponent child : children){
-                debug(child);
-                child.draw(ge);
-            }
+            drawChildren(ge);
             return;
         }
 
@@ -111,13 +111,18 @@ public abstract class ScalePage extends JPanel implements Drawable {
         int offsetPx = (int) bgController.getOffsetX();
         g2.translate(offsetPx, 0);
 
+        drawChildren(ge);
+
+        g2.translate(-offsetPx, 0);
+    }
+
+    private void drawChildren(ScaleGraphic ge) {
         for(ScaleComponent child : children){
             debug(child);
             child.draw(ge);
         }
-
-        g2.translate(-offsetPx, 0);
     }
+
     private void pressComponents(List<ScaleComponent> components){
         for(ScaleComponent component : components){
             if(component instanceof ScalePressableComponent pressable){
@@ -125,7 +130,7 @@ public abstract class ScalePage extends JPanel implements Drawable {
                     pressable.press();
                     update(pressable.getDim());
                     if(ScaleUIApplication.DEBUG)
-                        ScaleLogger.log("Pressed: " + pressable.name, this);
+                        ScaleLogger.log("Pressed: " + pressable.getName(), this);
                     break;
                 }
             }
@@ -136,7 +141,7 @@ public abstract class ScalePage extends JPanel implements Drawable {
         if(!ScaleUIApplication.DEBUG)
             return;
 
-        ScaleLogger.log("Drawn: " + component.name + " at " + component.getDim(), this);
+        ScaleLogger.log("Drawn: " + component.getName() + " at " + component.getDim(), this);
     }
 
     public float getBackgroundOffsetX() {
@@ -147,25 +152,25 @@ public abstract class ScalePage extends JPanel implements Drawable {
         this.bgController = controller;
     }
 
-    protected void startGameCycle(int msPerFrame) {
-        if (gameCycle != null) gameCycle.stopCycle();
-
-        gameCycle = new Cycle(msPerFrame);
+    protected void setupCycle(int ms, Runnable action){
+        gameCycle = new Cycle(ms);
         gameCycle.setAction(() -> {
             lastDeltaTime = gameCycle.getDeltaTime();
-            repaint();
+            action.run();
         });
-        gameCycle.startCycle();
     }
 
-    protected void clickListener(Runnable runnable) {
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                runnable.run();
-                paintImmediately(getBounds());
-            }
+    protected void setupGameCycle(Runnable action){
+        gameCycle = new Cycle();
+        gameCycle.setAction(() -> {
+            lastDeltaTime = gameCycle.getDeltaTime();
+            action.run();
         });
+    }
+
+    protected void startGameCycle() {
+        if (gameCycle == null) return;
+        gameCycle.startCycle();
     }
 
     protected void stopGameCycle() {
