@@ -160,6 +160,15 @@ public class ScalePage extends JPanel implements Drawable {
         });
     }
 
+    protected void clickListener(Runnable action){
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                action.run();
+            }
+        });
+    }
+
     protected void setupGameCycle(Runnable action){
         gameCycle = new Cycle();
         gameCycle.setAction(() -> {

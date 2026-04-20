@@ -6,6 +6,8 @@ import core.utilities.ScaleGraphic;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.GraphicsConfiguration;
+import java.awt.Transparency;
 
 /**
  * <h1>Scale2DGrid</h1>
@@ -32,15 +34,10 @@ public class Scale2DGrid extends ScaleComponent {
     private int cachedTileW = -1;
     private int cachedTileH = -1;
 
-    /**
-     * @param dim           bounding box of the grid (in % of page)
-     * @param cols          number of columns
-     * @param rows          number of rows
-     * @param cellWidthPct  width of a single cell (in % of page width)
-     * @param cellHeightPct height of a single cell (in % of page height)
-     * @param tilePainter   paints the cached background tile image
-     * @param cellRenderer  renders additional content per cell (obstacles, sprites, etc.)
-     */
+    private BufferedImage gridBuffer;
+    private int bufferW = -1;
+    private int bufferH = -1;
+
     public Scale2DGrid(Dim dim,
                        int cols,
                        int rows,
@@ -57,73 +54,78 @@ public class Scale2DGrid extends ScaleComponent {
         this.cellRenderer = cellRenderer;
     }
 
-    /**
-     * Draws the grid with no camera offset.
-     */
     @Override
     public void draw(ScaleGraphic g) {
         draw(g, 0.0);
     }
 
-    /**
-     * Draws the grid with a horizontal camera offset.
-     *
-     * @param g               the graphic context
-     * @param cameraOffsetPct horizontal offset in % of page width (positive = scroll right)
-     */
     public void draw(ScaleGraphic g, double cameraOffsetPct) {
         int tw = g.getX(cellWidthPct);
         int th = g.getY(cellHeightPct);
         if (tw <= 0 || th <= 0) return;
 
+        Graphics2D g2 = g.g2();
+
         if (cachedTile == null || tw != cachedTileW || th != cachedTileH) {
-            rebuildTile(tw, th);
+            rebuildTile(tw, th, g2.getDeviceConfiguration());
             cachedTileW = tw;
             cachedTileH = th;
         }
 
-        int cameraOffsetPx = g.getX(cameraOffsetPct);
-
-        int originX = g.getX(dim.x()) + cameraOffsetPx;
-        int originY = g.getY(dim.y());
         int gridWpx = g.getX(dim.width());
         int gridHpx = g.getY(dim.height());
 
-        Graphics2D g2 = g.g2();
-        Shape oldClip = g2.getClip();
-        g2.clipRect(g.getX(dim.x()), originY, gridWpx, gridHpx);
-
-        int firstCol = Math.max(0, -cameraOffsetPx / tw - 1);
-        int lastCol  = Math.min(cols, firstCol + gridWpx / tw + 3);
-        int visRows  = Math.min(rows, gridHpx / th + 2);
-
-        for (int row = 0; row < visRows; row++) {
-            for (int col = firstCol; col < lastCol; col++) {
-                int px = originX + col * tw;
-                int py = originY + row * th;
-
-                g2.drawImage(cachedTile, px, py, null);
-
-                if (cellRenderer != null) {
-                    cellRenderer.render(g2, col, row, px, py, tw, th);
-                }
-            }
+        if (gridBuffer == null || gridWpx != bufferW || gridHpx != bufferH) {
+            gridBuffer = createCompatible(gridWpx, gridHpx, g2.getDeviceConfiguration());
+            bufferW = gridWpx;
+            bufferH = gridHpx;
         }
 
-        g2.setClip(oldClip);
+        int cameraOffsetPx = g.getX(cameraOffsetPct);
+
+        Graphics2D bg = gridBuffer.createGraphics();
+        try {
+            bg.setComposite(AlphaComposite.Clear);
+            bg.fillRect(0, 0, bufferW, bufferH);
+            bg.setComposite(AlphaComposite.SrcOver);
+
+            int firstCol = Math.max(0, -cameraOffsetPx / tw - 1);
+            int lastCol  = Math.min(cols, firstCol + bufferW / tw + 3);
+            int visRows  = Math.min(rows, bufferH / th + 2);
+
+            for (int row = 0; row < visRows; row++) {
+                for (int col = firstCol; col < lastCol; col++) {
+                    int px = col * tw + cameraOffsetPx;
+                    int py = row * th;
+
+                    bg.drawImage(cachedTile, px, py, null);
+
+                    if (cellRenderer != null) {
+                        cellRenderer.render(bg, col, row, px, py, tw, th);
+                    }
+                }
+            }
+
+        } finally {
+            bg.dispose();
+        }
+
+        // 🔴 UNA sola drawImage
+        g2.drawImage(gridBuffer,
+                g.getX(dim.x()),
+                g.getY(dim.y()),
+                null);
     }
 
-    /**
-     * Forces the cached tile to be rebuilt on the next draw call.
-     */
-    public void invalidateTile() {
-        cachedTile = null;
-        cachedTileW = -1;
-        cachedTileH = -1;
+    private BufferedImage createCompatible(int w, int h, GraphicsConfiguration gc) {
+        if (gc != null) {
+            return gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+        }
+        return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 
-    private void rebuildTile(int tw, int th) {
-        cachedTile = new BufferedImage(tw, th, BufferedImage.TYPE_INT_ARGB);
+    private void rebuildTile(int tw, int th, GraphicsConfiguration gc) {
+        cachedTile = createCompatible(tw, th, gc);
         Graphics2D ig = cachedTile.createGraphics();
         try {
             tilePainter.paint(ig, tw, th);
