@@ -5,6 +5,7 @@ import core.components.ScalePage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +31,13 @@ public record ScaleGraphic(
         int w = getX(dim.width());
         int h = getY(dim.height());
 
+        g2().drawImage(image, x, y, w, h, null);
+    }
+    public void drawImage(Dim dim, BufferedImage image) {
+        int x = getX(dim.x());
+        int y = getY(dim.y());
+        int w = getX(dim.width());
+        int h = getY(dim.height());
         g2().drawImage(image, x, y, w, h, null);
     }
 

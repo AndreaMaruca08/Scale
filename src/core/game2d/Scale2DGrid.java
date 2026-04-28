@@ -110,7 +110,6 @@ public class Scale2DGrid extends ScaleComponent {
             bg.dispose();
         }
 
-        // 🔴 UNA sola drawImage
         g2.drawImage(gridBuffer,
                 g.getX(dim.x()),
                 g.getY(dim.y()),

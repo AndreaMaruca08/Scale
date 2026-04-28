@@ -134,6 +134,15 @@ public class ScalePage extends JPanel implements Drawable {
                     break;
                 }
             }
+            if(component instanceof CachedScalePressableComponent pressable){
+                if(pressable.checkPress(xClicked, yClicked, this)){
+                    pressable.press();
+                    update(pressable.getDim());
+                    if(ScaleUIApplication.DEBUG)
+                        ScaleLogger.log("Pressed: " + pressable.getName(), this);
+                    break;
+                }
+            }
         }
     }
 
